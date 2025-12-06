@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Monoes | Your Local AI Sales Team</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              display: ['Inter', 'sans-serif'],
+            },
+            colors: {
+              navy: {
+                950: '#020204',
+                900: '#050508',
+                800: '#0f111a',
+                700: '#1a1d2d',
+              },
+              primary: {
+                blue: '#3b82f6',
+                purple: '#6366f1',
+                pink: '#ec4899',
+              },
+            },
+            animation: {
+              'float': 'float 6s ease-in-out infinite',
+              'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'gradient-x': 'gradient-x 8s ease infinite',
+            },
+            keyframes: {
+              float: {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-20px)' },
+              },
+              'gradient-x': {
+                '0%, 100%': {
+                  'background-size': '200% 200%',
+                  'background-position': 'left center'
+                },
+                '50%': {
+                  'background-size': '200% 200%',
+                  'background-position': 'right center'
+                },
+              },
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body {
+        background-color: #050508;
+        color: #ffffff;
+        overflow-x: hidden;
+        font-family: 'Inter', sans-serif;
+      }
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 10px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #050508;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #1a1d2d;
+        border-radius: 5px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #6366f1;
+      }
+      .glass-panel {
+        background: rgba(15, 17, 26, 0.7);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      .text-glow {
+        text-shadow: 0 0 30px rgba(99, 102, 241, 0.4);
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.1",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
+    "react/": "https://aistudiocdn.com/react@^19.2.1/",
+    "framer-motion": "https://aistudiocdn.com/framer-motion@^12.23.25",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.556.0",
+    "ogl": "https://aistudiocdn.com/ogl@1.0.11"
+  }
+}
+</script>
+</head>
+  <body class="antialiased text-slate-200">
+    <div id="root"></div>
+  </body>
+</html>
