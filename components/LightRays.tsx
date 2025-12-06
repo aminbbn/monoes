@@ -1,3 +1,4 @@
+
 import React, { useRef, useEffect, useState } from 'react';
 import { Renderer, Program, Triangle, Mesh } from 'ogl';
 import './LightRays.css';
@@ -144,16 +145,30 @@ const LightRays: React.FC<LightRaysProps> = ({
 
       if (!containerRef.current) return;
 
-      const renderer = new Renderer({
-        dpr: Math.min(window.devicePixelRatio, 2),
-        alpha: true
-      });
+      let renderer: Renderer;
+      try {
+        renderer = new Renderer({
+          dpr: Math.min(window.devicePixelRatio, 2),
+          alpha: true
+        });
+        
+        // Check if context exists immediately after creation attempt
+        if (!renderer.gl) {
+          throw new Error('WebGL context is null');
+        }
+      } catch (e) {
+        console.warn('WebGL initialization failed:', e);
+        // Fallback: Just don't render the effect
+        return;
+      }
+
       rendererRef.current = renderer;
 
       const gl = renderer.gl;
       gl.canvas.style.width = '100%';
       gl.canvas.style.height = '100%';
 
+      // Clear any existing children before appending canvas
       while (containerRef.current.firstChild) {
         containerRef.current.removeChild(containerRef.current.firstChild);
       }
@@ -347,7 +362,7 @@ void main() {
 
         window.removeEventListener('resize', updatePlacement);
 
-        if (renderer) {
+        if (renderer && renderer.gl) {
           try {
             const canvas = renderer.gl.canvas;
             const loseContextExt = renderer.gl.getExtension('WEBGL_lose_context');
@@ -393,12 +408,14 @@ void main() {
     distortion
   ]);
 
+  // Safe updates for props changes
   useEffect(() => {
+    // We only proceed if everything is initialized
     if (!uniformsRef.current || !containerRef.current || !rendererRef.current) return;
 
     const u = uniformsRef.current;
-    const renderer = rendererRef.current;
-
+    // Don't rely on global rendererRef if we have closures, but here we do.
+    
     u.raysColor.value = hexToRgb(raysColor);
     u.raysSpeed.value = raysSpeed;
     u.lightSpread.value = lightSpread;
@@ -410,11 +427,20 @@ void main() {
     u.noiseAmount.value = noiseAmount;
     u.distortion.value = distortion;
 
-    const { clientWidth: wCSS, clientHeight: hCSS } = containerRef.current;
-    const dpr = renderer.dpr;
-    const { anchor, dir } = getAnchorAndDir(raysOrigin as RaysOrigin, wCSS * dpr, hCSS * dpr);
-    u.rayPos.value = anchor;
-    u.rayDir.value = dir;
+    // We can't easily re-run placement logic here without duplicating code or hoisting updatePlacement.
+    // For now, assume resize handler handles resolution/position, and these are just uniform tweaks.
+    // However, RayOrigin triggers new position.
+    
+    // Recalculate position/dir based on new props
+    const renderer = rendererRef.current;
+    if (renderer) {
+      const { clientWidth: wCSS, clientHeight: hCSS } = containerRef.current;
+      const dpr = renderer.dpr;
+      const { anchor, dir } = getAnchorAndDir(raysOrigin as RaysOrigin, wCSS * dpr, hCSS * dpr);
+      u.rayPos.value = anchor;
+      u.rayDir.value = dir;
+    }
+
   }, [
     raysColor,
     raysSpeed,
@@ -429,9 +455,10 @@ void main() {
     distortion
   ]);
 
+  // Listen for mouse events
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      if (!containerRef.current || !rendererRef.current) return;
+      if (!containerRef.current) return;
       const rect = containerRef.current.getBoundingClientRect();
       const x = (e.clientX - rect.left) / rect.width;
       const y = (e.clientY - rect.top) / rect.height;

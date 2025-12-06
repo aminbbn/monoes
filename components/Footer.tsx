@@ -81,12 +81,12 @@ export const Footer: React.FC = () => {
         <div className="grid grid-cols-2 md:grid-cols-5 gap-10 mb-16">
           <motion.div className="col-span-2" variants={itemVariants}>
              {/* Fixed Footer Logo */}
-             <div className="flex items-center mb-6 text-white gap-3">
-                <div className="w-8 h-8 flex-shrink-0">
+             <div className="flex items-center mb-6 text-white gap-3 group">
+                <div className="w-8 h-8 flex-shrink-0 group-hover:text-primary-blue transition-colors duration-300">
                     <Monkey variant="filled" size="custom" className="w-full h-full" />
                 </div>
-                <div className="h-7 w-40 md:h-8 md:w-48 opacity-90 hover:opacity-100 transition-opacity">
-                   <Monkey variant="text-filled" size="custom" className="w-full h-full" animate={false} />
+                <div className="font-display font-bold text-2xl tracking-tight leading-none group-hover:text-primary-blue transition-colors duration-300">
+                   Monoes
                 </div>
              </div>
              

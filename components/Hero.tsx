@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, useSpring, useMotionValue, AnimatePresence } from 'framer-motion';
 import { Monkey } from './Monkey';
-import { Play, ArrowDown, Activity, Users, MessageCircle, CheckCircle2, Search, Mail, Shield } from 'lucide-react';
+import { Play, ArrowDown, Activity, Users, MessageCircle, CheckCircle2, Search, Mail, Shield, Zap, BarChart3, Calendar, Loader2, Send, TrendingUp, User } from 'lucide-react';
 import LightRays from './LightRays';
 
 const smoothEase = [0.23, 1, 0.32, 1];
@@ -35,30 +35,30 @@ const sideSlideVariants = (direction: 'left' | 'right') => ({
   },
 });
 
-// New Component: Handles organic, life-like floating movement
+// Improved Organic Floater with more range
 const OrganicFloater = ({ children, delay = 0, intensity = 1 }: { children?: React.ReactNode, delay?: number, intensity?: number }) => {
   return (
     <motion.div
       animate={{
-        y: [0, -15 * intensity, 0],
-        rotateZ: [0, 2 * intensity, -2 * intensity, 0],
-        scale: [1, 1.02, 0.98, 1] // Breathing effect
+        y: [0, -25 * intensity, 0],
+        rotateZ: [0, 3 * intensity, -3 * intensity, 0],
+        scale: [1, 1.03, 0.97, 1]
       }}
       transition={{
         y: {
-          duration: 4,
+          duration: 5,
           repeat: Infinity,
           ease: "easeInOut",
           delay: delay
         },
         rotateZ: {
-          duration: 7, // Prime number to avoid syncing with Y
+          duration: 8,
           repeat: Infinity,
           ease: "easeInOut",
           delay: delay
         },
         scale: {
-          duration: 5, // Another primeish number
+          duration: 6,
           repeat: Infinity,
           ease: "easeInOut",
           delay: delay + 1
@@ -67,6 +67,230 @@ const OrganicFloater = ({ children, delay = 0, intensity = 1 }: { children?: Rea
     >
       {children}
     </motion.div>
+  );
+};
+
+// --- Message Types & Data ---
+
+type MessageType = 'scanning' | 'found' | 'chart' | 'email' | 'meeting' | 'success';
+
+interface MonkeyMessage {
+  type: MessageType;
+  title: string;
+  subtitle?: string;
+  data?: any;
+  icon?: React.ReactNode;
+  color?: string;
+}
+
+const leftMessages: MonkeyMessage[] = [
+  { 
+    type: 'scanning', 
+    title: 'Scanning...', 
+    subtitle: 'Looking for VPs', 
+    icon: <Loader2 size={12} className="animate-spin" />,
+    color: 'border-blue-500/30 bg-blue-500/10'
+  },
+  { 
+    type: 'found', 
+    title: 'Lead Found! 🎯', 
+    subtitle: 'Sarah J. (CMO)', 
+    icon: <User size={12} />,
+    color: 'border-green-500/30 bg-green-500/10'
+  },
+  { 
+    type: 'chart', 
+    title: 'Match Score', 
+    subtitle: '98% Fit', 
+    data: [30, 50, 45, 70, 90], 
+    icon: <Activity size={12} />,
+    color: 'border-purple-500/30 bg-purple-500/10'
+  },
+  {
+    type: 'scanning',
+    title: 'Parsing Data',
+    subtitle: 'LinkedIn & Web',
+    icon: <Search size={12} />,
+    color: 'border-indigo-500/30 bg-indigo-500/10'
+  }
+];
+
+const rightMessages: MonkeyMessage[] = [
+  { 
+    type: 'email', 
+    title: 'Email Sent 📨', 
+    subtitle: 'Sequence #1', 
+    icon: <Send size={12} />,
+    color: 'border-blue-500/30 bg-blue-500/10'
+  },
+  { 
+    type: 'meeting', 
+    title: 'Meeting Booked', 
+    subtitle: 'Tue 2:00 PM', 
+    icon: <Calendar size={12} />,
+    color: 'border-orange-500/30 bg-orange-500/10'
+  },
+  { 
+    type: 'chart', 
+    title: 'Reply Rate', 
+    subtitle: '+15% This Week', 
+    data: [20, 35, 40, 60, 75], 
+    icon: <TrendingUp size={12} />,
+    color: 'border-green-500/30 bg-green-500/10'
+  },
+  { 
+    type: 'success', 
+    title: 'CRM Updated', 
+    subtitle: 'HubSpot Synced', 
+    icon: <CheckCircle2 size={12} />,
+    color: 'border-teal-500/30 bg-teal-500/10'
+  }
+];
+
+// --- Mini Visual Components ---
+
+const MiniChart = ({ data }: { data: number[] }) => (
+  <div className="flex items-end space-x-1 h-6 mt-2 w-full justify-between px-1">
+    {data.map((h, i) => (
+      <motion.div
+        key={i}
+        initial={{ height: 0 }}
+        animate={{ height: `${h}%` }}
+        transition={{ duration: 0.5, delay: i * 0.1 }}
+        className="w-1.5 bg-current opacity-80 rounded-t-sm"
+      />
+    ))}
+  </div>
+);
+
+const MiniProfile = () => (
+  <div className="flex items-center space-x-2 mt-2 bg-white/5 p-1.5 rounded-lg">
+    <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-400 to-blue-400 flex items-center justify-center text-[8px] font-bold text-white">
+      SJ
+    </div>
+    <div className="flex flex-col space-y-1">
+      <div className="h-1.5 w-12 bg-white/40 rounded-full" />
+      <div className="h-1 w-8 bg-white/20 rounded-full" />
+    </div>
+  </div>
+);
+
+const MiniProgress = () => (
+  <div className="w-full h-1.5 bg-white/10 rounded-full mt-2 overflow-hidden">
+    <motion.div 
+      className="h-full bg-current"
+      initial={{ width: "0%" }}
+      animate={{ width: "100%" }}
+      transition={{ duration: 2, ease: "linear", repeat: Infinity }}
+    />
+  </div>
+);
+
+// New Component: Monkey with Status Bubble
+const HeroMonkey = ({ 
+  side, 
+  variant = "3d", 
+  delay = 0 
+}: { 
+  side: 'left' | 'right', 
+  variant?: "3d" | "filled" | "outline", 
+  delay?: number 
+}) => {
+  const [currentMessage, setCurrentMessage] = useState<MonkeyMessage | null>(null);
+  const [isVisible, setIsVisible] = useState(false);
+  
+  // Use a Ref to track the timeout so we can clear it reliably
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  
+  const messages = side === 'left' ? leftMessages : rightMessages;
+
+  useEffect(() => {
+    // Cleanup any existing timers when props change or unmount
+    const cleanup = () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+    cleanup();
+
+    const scheduleNext = () => {
+      // Random wait before showing next message (2s - 5s)
+      const waitTime = Math.random() * 3000 + 2000;
+      
+      timerRef.current = setTimeout(() => {
+        // Pick random message
+        const msg = messages[Math.floor(Math.random() * messages.length)];
+        setCurrentMessage(msg);
+        setIsVisible(true);
+        
+        // Hide after showing for 3.5s
+        timerRef.current = setTimeout(() => {
+          setIsVisible(false);
+          scheduleNext(); // Recursively schedule next
+        }, 3500);
+        
+      }, waitTime);
+    };
+
+    // Initial start delay
+    timerRef.current = setTimeout(scheduleNext, 2000 + delay * 1000);
+
+    return cleanup;
+  }, [messages, delay]);
+
+  return (
+    <div className={`absolute -top-32 ${side === 'left' ? '-right-10' : '-left-10'} z-20`}>
+      <OrganicFloater delay={delay} intensity={1.2}>
+        <div className="relative">
+           {/* Glow Effect behind Monkey */}
+           <div className="absolute inset-0 bg-primary-blue/20 blur-3xl rounded-full scale-150 animate-pulse-slow" />
+           
+           <Monkey variant={variant} size="xl" className="scale-125 md:scale-150 drop-shadow-2xl" animate={false} mirror={side === 'left'} />
+           
+           {/* Status Bubble */}
+           <AnimatePresence mode="wait">
+             {isVisible && currentMessage && (
+               <motion.div
+                 key={currentMessage.title}
+                 initial={{ opacity: 0, scale: 0.8, y: 15, x: side === 'left' ? -20 : 20 }}
+                 animate={{ opacity: 1, scale: 1, y: 0, x: 0 }}
+                 exit={{ opacity: 0, scale: 0.8, y: -10 }}
+                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                 className={`absolute -top-24 ${side === 'left' ? '-left-32' : '-right-32'} w-32 
+                   backdrop-blur-xl border ${currentMessage.color || 'border-white/20 bg-navy-800/80'} 
+                   text-white p-3 rounded-2xl shadow-2xl z-50`}
+               >
+                 {/* Header */}
+                 <div className="flex items-center space-x-2 mb-1">
+                   <div className={`p-1 rounded-full ${currentMessage.type === 'scanning' ? '' : 'bg-white/10'}`}>
+                     {currentMessage.icon}
+                   </div>
+                   <span className="text-xs font-bold leading-tight">{currentMessage.title}</span>
+                 </div>
+                 
+                 {/* Subtext */}
+                 {currentMessage.subtitle && (
+                    <div className="text-[10px] text-white/70 pl-1">{currentMessage.subtitle}</div>
+                 )}
+
+                 {/* Visual Payload */}
+                 <div className="text-primary-blue">
+                    {currentMessage.type === 'chart' && <MiniChart data={currentMessage.data} />}
+                    {currentMessage.type === 'found' && <MiniProfile />}
+                    {currentMessage.type === 'scanning' && <MiniProgress />}
+                 </div>
+
+                 {/* Little triangle arrow */}
+                 <div 
+                    className={`absolute bottom-[-6px] ${side === 'left' ? 'right-6' : 'left-6'} 
+                    w-3 h-3 border-r border-b ${currentMessage.color?.split(' ')[0] || 'border-white/20'} 
+                    ${currentMessage.color?.split(' ')[1] || 'bg-navy-800/80'} 
+                    transform rotate-45 backdrop-blur-xl`} 
+                 />
+               </motion.div>
+             )}
+           </AnimatePresence>
+        </div>
+      </OrganicFloater>
+    </div>
   );
 };
 
@@ -96,7 +320,7 @@ export const Hero: React.FC = () => {
     <section 
       ref={containerRef}
       onMouseMove={handleMouseMove}
-      className="relative min-h-[100dvh] flex items-center justify-center pt-28 pb-16 md:pt-32 md:pb-20 overflow-hidden bg-navy-900 perspective-1000"
+      className="relative min-h-[100dvh] flex items-center justify-center pt-28 pb-16 md:pt-40 md:pb-20 overflow-hidden bg-navy-900 perspective-1000"
       style={{ perspective: '1000px' }}
     >
       
@@ -161,18 +385,11 @@ export const Hero: React.FC = () => {
           variants={sideSlideVariants('left')}
         >
           <div className="relative group">
-            <div className="absolute -top-16 right-0 z-0 opacity-100">
-               {/* 
-                 FIXED: Added OrganicFloater for complex animation.
-                 FIXED: Added mirror={true} to make the monkey face RIGHT (towards content) 
-               */}
-               <OrganicFloater delay={0} intensity={1.1}>
-                  <Monkey variant="3d" size="xl" className="scale-125" animate={false} mirror={true} />
-               </OrganicFloater>
-            </div>
+            {/* Elevated Hero Monkey */}
+            <HeroMonkey side="left" variant="3d" delay={0} />
             
             {/* Lead Stack Card Visual */}
-            <div className="relative z-10 w-72 mt-12">
+            <div className="relative z-10 w-72 mt-8">
                <LeadStack />
             </div>
 
@@ -198,7 +415,7 @@ export const Hero: React.FC = () => {
           variants={containerVariants}
         >
           <motion.div variants={itemVariants}>
-            <span className="inline-flex items-center py-1.5 px-4 rounded-full bg-white/5 border border-white/10 text-primary-blue text-xs font-semibold mb-6 md:mb-8 backdrop-blur-md shadow-lg">
+            <span className="inline-flex items-center py-1.5 px-4 rounded-full bg-white/5 border border-white/10 text-primary-blue text-xs font-semibold mb-6 md:mb-8 backdrop-blur-md shadow-lg hover:bg-white/10 transition-colors cursor-default">
               <Shield size={12} className="mr-1.5" />
               100% Local. 100% Private. 0% Cloud.
             </span>
@@ -254,17 +471,10 @@ export const Hero: React.FC = () => {
           variants={sideSlideVariants('right')}
         >
            <div className="relative group w-full flex flex-col items-center">
-            <div className="absolute -top-16 left-10 z-0 opacity-100">
-               {/* 
-                 FIXED: Added OrganicFloater for complex animation.
-                 Staggered delay (1.5s) so it doesn't move in sync with the left one.
-               */}
-               <OrganicFloater delay={1.5} intensity={0.9}>
-                  <Monkey variant="3d" size="xl" className="scale-110" animate={false} />
-               </OrganicFloater>
-            </div>
+            {/* Elevated Hero Monkey */}
+            <HeroMonkey side="right" variant="3d" delay={1.5} />
 
-            <div className="relative z-10 w-72 mt-12">
+            <div className="relative z-10 w-72 mt-8">
                <AnalyticsPanel />
             </div>
             

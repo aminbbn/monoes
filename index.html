@@ -55,11 +55,20 @@
       }
     </script>
     <style>
+      html {
+        width: 100%;
+        /* Removed fixed height to prevent double scrollbars */
+      }
       body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        min-height: 100vh;
+        overflow-x: hidden;
         background-color: #050508;
         color: #ffffff;
-        overflow-x: hidden;
         font-family: 'Inter', sans-serif;
+        position: relative;
       }
       /* Custom Scrollbar */
       ::-webkit-scrollbar {
@@ -71,6 +80,7 @@
       ::-webkit-scrollbar-thumb {
         background: #1a1d2d;
         border-radius: 5px;
+        border: 2px solid #050508;
       }
       ::-webkit-scrollbar-thumb:hover {
         background: #6366f1;
@@ -82,6 +92,12 @@
       }
       .text-glow {
         text-shadow: 0 0 30px rgba(99, 102, 241, 0.4);
+      }
+      #root {
+        width: 100%;
+        /* Removed overflow-x: hidden from root to prevent creating a second scroll container */
+        display: flex;
+        flex-direction: column;
       }
     </style>
   <script type="importmap">

@@ -1,8 +1,10 @@
+
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Monkey } from './Monkey';
 import { ChevronDown, Menu, X, Book, FileText, HelpCircle, ArrowRight } from 'lucide-react';
 import { NavItem } from '../types';
+import { LiquidGlass } from './LiquidGlass';
 
 const navItems: NavItem[] = [
   { label: 'Home', href: '#' },
@@ -50,24 +52,21 @@ export const Navbar: React.FC = () => {
              minHeight: '50px'
           }}
         >
-          {/* SEPARATE BACKGROUND LAYER TO PREVENT TEXT DISTORTION */}
+          {/* LIQUID GLASS BACKGROUND LAYER */}
           <motion.div 
              layout
-             className="absolute inset-0 z-0 rounded-full"
+             className="absolute inset-0 z-0 rounded-full overflow-hidden"
              initial={{ opacity: 0 }}
              animate={{ 
                 opacity: isScrolled ? 1 : 0,
-                backgroundColor: "rgba(5, 5, 8, 0.8)",
-                borderColor: "rgba(255,255,255,0.1)",
              }}
              style={{
-                backdropFilter: "blur(20px)",
-                borderWidth: "1px",
-                borderStyle: "solid",
                 boxShadow: isScrolled ? "0 25px 50px -12px rgba(0, 0, 0, 0.5)" : "none"
              }}
              transition={{ duration: 0.3 }}
-          />
+          >
+             <LiquidGlass opacity={0.65} blur={24} intensity={25} />
+          </motion.div>
 
           {/* Left: Logo */}
           <motion.div layout="position" className={`relative z-10 flex items-center ${!isScrolled ? 'flex-1 justify-start' : ''}`}>
@@ -80,7 +79,7 @@ export const Navbar: React.FC = () => {
             </a>
           </motion.div>
 
-          {/* Center: Desktop Menu - Switched to lg:flex to fix tablet gap */}
+          {/* Center: Desktop Menu */}
           <motion.div 
             layout="position"
             className={`
@@ -128,17 +127,22 @@ export const Navbar: React.FC = () => {
                       className="absolute top-full left-1/2 -translate-x-1/2 mt-4 w-80 p-2"
                     >
                        <div className="absolute -top-6 left-0 w-full h-6 bg-transparent" />
-                       <div className="bg-navy-900/95 backdrop-blur-2xl border border-white/10 rounded-2xl p-2 shadow-2xl ring-1 ring-white/5 overflow-hidden text-left">
-                          <div className="space-y-1">
-                             <DropdownItem title="Documentation" desc="Start building" icon={<Book size={18} />} />
-                             <DropdownItem title="Blog & Stories" desc="Latest updates" icon={<FileText size={18} />} />
-                             <DropdownItem title="Help Center" desc="Get support 24/7" icon={<HelpCircle size={18} />} />
-                          </div>
-                          <div className="mt-2 pt-2 border-t border-white/5 px-3 pb-1">
-                            <a href="#" className="flex items-center justify-between text-xs font-medium text-gray-400 hover:text-primary-blue transition-colors group/link">
-                                <span>View all resources</span>
-                                <ArrowRight size={12} className="group-hover/link:translate-x-1 transition-transform" />
-                            </a>
+                       <div className="relative overflow-hidden rounded-2xl shadow-2xl">
+                          {/* Dropdown Liquid Glass Background */}
+                          <LiquidGlass className="absolute inset-0" opacity={0.8} blur={30} intensity={15} />
+                          
+                          <div className="relative z-10 bg-navy-900/50 p-2 text-left border border-white/10 rounded-2xl">
+                              <div className="space-y-1">
+                                 <DropdownItem title="Documentation" desc="Start building" icon={<Book size={18} />} />
+                                 <DropdownItem title="Blog & Stories" desc="Latest updates" icon={<FileText size={18} />} />
+                                 <DropdownItem title="Help Center" desc="Get support 24/7" icon={<HelpCircle size={18} />} />
+                              </div>
+                              <div className="mt-2 pt-2 border-t border-white/5 px-3 pb-1">
+                                <a href="#" className="flex items-center justify-between text-xs font-medium text-gray-400 hover:text-primary-blue transition-colors group/link">
+                                    <span>View all resources</span>
+                                    <ArrowRight size={12} className="group-hover/link:translate-x-1 transition-transform" />
+                                </a>
+                              </div>
                           </div>
                        </div>
                     </motion.div>
@@ -174,12 +178,15 @@ export const Navbar: React.FC = () => {
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-             className="fixed inset-0 z-40 bg-navy-950/95 backdrop-blur-xl lg:hidden pt-24 px-4"
+             className="fixed inset-0 z-40 lg:hidden pt-24 px-4 overflow-hidden"
              initial={{ opacity: 0, y: -20 }}
              animate={{ opacity: 1, y: 0 }}
              exit={{ opacity: 0, y: -20 }}
           >
-             <div className="space-y-4">
+             {/* Mobile Menu Background */}
+             <LiquidGlass className="absolute inset-0" opacity={0.95} blur={40} intensity={20} />
+             
+             <div className="relative z-10 space-y-4">
                {navItems.map((item) => (
                  <div key={item.label} className="border-b border-white/5 pb-2">
                     <a href={item.href} className="block text-xl font-medium text-gray-200 py-2">{item.label}</a>
@@ -191,7 +198,7 @@ export const Navbar: React.FC = () => {
                     )}
                  </div>
                ))}
-               <button className="w-full mt-8 px-6 py-4 bg-white text-navy-950 rounded-xl font-bold text-lg">
+               <button className="w-full mt-8 px-6 py-4 bg-white text-navy-950 rounded-xl font-bold text-lg shadow-xl">
                  Launch App
                </button>
              </div>
