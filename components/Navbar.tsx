@@ -65,7 +65,8 @@ export const Navbar: React.FC = () => {
              }}
              transition={{ duration: 0.3 }}
           >
-             <LiquidGlass opacity={0.65} blur={24} intensity={25} />
+             {/* Significantly increased blur and opacity for stronger frosted effect */}
+             <LiquidGlass opacity={0.75} blur={40} intensity={35} />
           </motion.div>
 
           {/* Left: Logo */}
@@ -128,8 +129,8 @@ export const Navbar: React.FC = () => {
                     >
                        <div className="absolute -top-6 left-0 w-full h-6 bg-transparent" />
                        <div className="relative overflow-hidden rounded-2xl shadow-2xl">
-                          {/* Dropdown Liquid Glass Background */}
-                          <LiquidGlass className="absolute inset-0" opacity={0.8} blur={30} intensity={15} />
+                          {/* Dropdown Liquid Glass Background - High Blur */}
+                          <LiquidGlass className="absolute inset-0" opacity={0.85} blur={50} intensity={25} />
                           
                           <div className="relative z-10 bg-navy-900/50 p-2 text-left border border-white/10 rounded-2xl">
                               <div className="space-y-1">
@@ -183,8 +184,8 @@ export const Navbar: React.FC = () => {
              animate={{ opacity: 1, y: 0 }}
              exit={{ opacity: 0, y: -20 }}
           >
-             {/* Mobile Menu Background */}
-             <LiquidGlass className="absolute inset-0" opacity={0.95} blur={40} intensity={20} />
+             {/* Mobile Menu Background - Strong Glass Effect */}
+             <LiquidGlass className="absolute inset-0" opacity={0.95} blur={60} intensity={30} />
              
              <div className="relative z-10 space-y-4">
                {navItems.map((item) => (

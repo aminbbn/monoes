@@ -55,9 +55,11 @@
       }
     </script>
     <style>
+      /* CRITICAL: Double Scrollbar Fix */
       html {
         width: 100%;
-        /* Removed fixed height to prevent double scrollbars */
+        overflow-x: hidden;
+        height: auto; /* Ensure HTML doesn't have fixed height to avoid scroll trapping */
       }
       body {
         margin: 0;
@@ -69,7 +71,17 @@
         color: #ffffff;
         font-family: 'Inter', sans-serif;
         position: relative;
+        height: auto; /* Prevent body from being 100% height container with overflow */
       }
+      
+      #root {
+        width: 100%;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow: visible; /* Explicitly allow overflow */
+      }
+
       /* Custom Scrollbar */
       ::-webkit-scrollbar {
         width: 10px;
@@ -92,12 +104,6 @@
       }
       .text-glow {
         text-shadow: 0 0 30px rgba(99, 102, 241, 0.4);
-      }
-      #root {
-        width: 100%;
-        /* Removed overflow-x: hidden from root to prevent creating a second scroll container */
-        display: flex;
-        flex-direction: column;
       }
     </style>
   <script type="importmap">
