@@ -8,13 +8,11 @@ import { HowItWorks } from './components/HowItWorks';
 import { SocialProof } from './components/SocialProof';
 import { FinalCTA } from './components/FinalCTA';
 import { Footer } from './components/Footer';
-import { BackgroundLogo } from './components/BackgroundLogo';
 
 function App() {
   return (
     <div className="min-h-screen bg-navy-900 text-white font-sans selection:bg-primary-purple selection:text-white relative overflow-x-hidden">
       <Navbar />
-      <BackgroundLogo />
       <main className="relative">
         <Hero />
         <ProblemSection />
