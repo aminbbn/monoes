@@ -11,7 +11,7 @@ import { Footer } from './components/Footer';
 
 function App() {
   return (
-    <div className="min-h-screen bg-navy-900 text-white font-sans selection:bg-primary-purple selection:text-white relative">
+    <div className="bg-navy-900 text-white font-sans selection:bg-primary-purple selection:text-white relative">
       <Navbar />
       <main className="relative">
         <Hero />

@@ -56,13 +56,14 @@ export const LiquidGlass: React.FC<LiquidGlassProps> = ({
         </defs>
       </svg>
 
-      {/* Base Glass Layer with Backdrop Blur */}
+      {/* Base Glass Layer with Backdrop Blur & Saturation */}
       <div 
         className="absolute inset-0 z-0"
         style={{
-            backdropFilter: `blur(${blur}px)`,
-            WebkitBackdropFilter: `blur(${blur}px)`,
-            backgroundColor: `rgba(10, 12, 20, ${opacity})`, // Slightly blue-tinted dark base
+            // Added saturate(180%) for that rich, premium glass look
+            backdropFilter: `blur(${blur}px) saturate(180%)`,
+            WebkitBackdropFilter: `blur(${blur}px) saturate(180%)`,
+            backgroundColor: `rgba(15, 23, 42, ${opacity})`, // Deep navy base
         }}
       />
       

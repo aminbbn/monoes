@@ -22,7 +22,8 @@ export const Navbar: React.FC = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      // Increased threshold to 50px so it doesn't flicker immediately
+      setIsScrolled(window.scrollY > 50);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -30,7 +31,7 @@ export const Navbar: React.FC = () => {
 
   return (
     <>
-      <div className={`fixed top-0 left-0 right-0 z-50 flex justify-center transition-all duration-500 pointer-events-none ${isScrolled ? 'pt-4' : 'pt-4'}`}>
+      <div className={`fixed top-0 left-0 right-0 z-50 flex justify-center pointer-events-none ${isScrolled ? 'pt-4' : 'pt-6'}`}>
         <motion.nav
           layout
           initial={{ y: -100 }}
@@ -39,7 +40,8 @@ export const Navbar: React.FC = () => {
              width: isScrolled ? "auto" : "100%",
              gap: isScrolled ? 12 : 0,
           }}
-          transition={{ type: 'spring', stiffness: 200, damping: 25 }}
+          // Replaced spring with a smooth ease-in-out transition for less bounce/jank
+          transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1.0] }}
           className={`
             pointer-events-auto relative flex items-center
             ${isScrolled 
@@ -61,19 +63,23 @@ export const Navbar: React.FC = () => {
                 opacity: isScrolled ? 1 : 0,
              }}
              style={{
-                boxShadow: isScrolled ? "0 25px 50px -12px rgba(0, 0, 0, 0.5)" : "none"
+                boxShadow: isScrolled ? "0 25px 50px -12px rgba(0, 0, 0, 0.5)" : "none",
+                backdropFilter: isScrolled ? "blur(24px) saturate(180%)" : "none",
+                WebkitBackdropFilter: isScrolled ? "blur(24px) saturate(180%)" : "none",
+                backgroundColor: isScrolled ? "rgba(15, 17, 26, 0.3)" : "transparent"
              }}
-             transition={{ duration: 0.3 }}
+             // Match the parent transition for sync
+             transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1.0] }}
           >
-             {/* Significantly increased blur and opacity for stronger frosted effect */}
-             <LiquidGlass opacity={0.75} blur={40} intensity={35} />
+             {/* Strong frosted glass effect */}
+             <LiquidGlass opacity={0.5} blur={60} intensity={40} />
           </motion.div>
 
           {/* Left: Logo */}
           <motion.div layout="position" className={`relative z-10 flex items-center ${!isScrolled ? 'flex-1 justify-start' : ''}`}>
             <a href="#" className="flex items-center group relative z-50">
                {/* Text Logo Only - Resized to be proportionate and legible */}
-               <div className={`relative transition-all duration-500 ease-spring ${isScrolled ? 'h-7 w-28' : 'h-9 w-36 md:h-12 md:w-48'} text-white group-hover:text-primary-blue`}>
+               <div className={`relative transition-all duration-500 ease-out ${isScrolled ? 'h-7 w-28' : 'h-9 w-36 md:h-12 md:w-48'} text-white group-hover:text-primary-blue`}>
                   <div className="absolute inset-0 bg-primary-blue/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
                   <Monkey variant="text-filled" size="custom" className="w-full h-full relative z-10" animate={false} />
                </div>
@@ -84,8 +90,8 @@ export const Navbar: React.FC = () => {
           <motion.div 
             layout="position"
             className={`
-              hidden lg:flex items-center rounded-full transition-all duration-300 relative z-10
-              ${!isScrolled ? 'bg-white/5 border border-white/5 backdrop-blur-sm p-1.5' : ''}
+              hidden lg:flex items-center rounded-full transition-all duration-500 relative z-10
+              ${!isScrolled ? 'p-1.5' : ''}
             `}
           >
             {navItems.map((item) => (

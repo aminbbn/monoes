@@ -55,31 +55,27 @@
       }
     </script>
     <style>
-      /* CRITICAL: Double Scrollbar Fix */
+      /* Global Reset & Scrollbar Fix */
       html {
-        width: 100%;
-        overflow-x: hidden;
-        height: auto; /* Ensure HTML doesn't have fixed height to avoid scroll trapping */
+        -webkit-tap-highlight-color: transparent;
       }
+      
       body {
         margin: 0;
         padding: 0;
-        width: 100%;
         min-height: 100vh;
+        /* Prevent horizontal scroll on the body only */
         overflow-x: hidden;
         background-color: #050508;
         color: #ffffff;
         font-family: 'Inter', sans-serif;
         position: relative;
-        height: auto; /* Prevent body from being 100% height container with overflow */
       }
       
       #root {
-        width: 100%;
-        min-height: 100vh;
         display: flex;
         flex-direction: column;
-        overflow: visible; /* Explicitly allow overflow */
+        min-height: 100vh;
       }
 
       /* Custom Scrollbar */
@@ -97,13 +93,19 @@
       ::-webkit-scrollbar-thumb:hover {
         background: #6366f1;
       }
+      
       .glass-panel {
         background: rgba(15, 17, 26, 0.7);
         backdrop-filter: blur(16px);
         border: 1px solid rgba(255, 255, 255, 0.05);
       }
+      
       .text-glow {
         text-shadow: 0 0 30px rgba(99, 102, 241, 0.4);
+      }
+
+      * {
+        box-sizing: border-box;
       }
     </style>
   <script type="importmap">
