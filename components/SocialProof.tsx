@@ -4,10 +4,10 @@ import { Monkey } from './Monkey';
 import { Star, Quote } from 'lucide-react';
 
 const stats = [
-  { label: 'Active Users', value: 10000, suffix: '+', emoji: '🏆' },
-  { label: 'Messages Sent', value: 2, suffix: 'M+', emoji: '📢', isDecimal: true },
-  { label: 'Leads Reached', value: 500, suffix: 'k+', emoji: '🤝' },
-  { label: 'Positive Feedback', value: 98, suffix: '%', emoji: '⭐' },
+  { label: 'Local Privacy', value: 100, suffix: '%', emoji: '🛡️' },
+  { label: 'Saved Weekly', value: 6, suffix: ' Hours', emoji: '⚡' },
+  { label: 'Channels Supported', value: 10, suffix: '+', emoji: '🔌' },
+  { label: 'More Meetings', value: 3, suffix: 'x', emoji: '📅' },
 ];
 
 interface TestimonialData {
@@ -110,8 +110,8 @@ export const SocialProof: React.FC = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 relative z-10">
             {stats.map((stat, i) => (
               <div key={i} className="text-center group">
-                <div className="text-3xl md:text-5xl font-bold text-white mb-2 group-hover:scale-110 transition-transform duration-300 origin-center">
-                  <Counter value={stat.value} suffix={stat.suffix} isDecimal={stat.isDecimal} />
+                <div className="text-3xl md:text-5xl font-bold text-white mb-2 group-hover:scale-110 transition-transform duration-300 origin-center whitespace-nowrap">
+                  <Counter value={stat.value} suffix={stat.suffix} />
                 </div>
                 <div className="text-primary-blue text-xs font-bold uppercase tracking-widest mb-4">{stat.label}</div>
                 <div className="text-xl md:text-2xl filter drop-shadow-lg group-hover:-translate-y-2 transition-transform duration-300">

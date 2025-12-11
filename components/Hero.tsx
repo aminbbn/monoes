@@ -448,7 +448,7 @@ export const Hero: React.FC = () => {
               className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-primary-purple to-primary-blue rounded-full text-white font-bold text-lg relative group overflow-hidden shadow-2xl shadow-primary-purple/30 ring-1 ring-white/20"
             >
               <span className="relative z-10 flex items-center justify-center">
-                Launch App
+                Start Free Trial
               </span>
               <div className="absolute inset-0 bg-white/20 blur-md opacity-0 group-hover:opacity-100 transition-opacity" />
             </motion.button>
@@ -459,7 +459,7 @@ export const Hero: React.FC = () => {
               className="w-full sm:w-auto px-8 py-4 rounded-full text-white font-medium border border-white/10 bg-white/5 hover:bg-white/10 backdrop-blur-sm flex items-center justify-center transition-colors"
             >
               <Play size={18} className="mr-2 fill-current" />
-              Watch Demo
+              Book a Demo
             </motion.button>
           </motion.div>
         </motion.div>

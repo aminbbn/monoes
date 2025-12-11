@@ -7,48 +7,48 @@ import { Feature } from '../types';
 const features: Feature[] = [
   {
     id: 'omni',
-    title: 'Omnichannel',
-    description: 'Reach prospects on LinkedIn, Telegram, and Email simultaneously.',
+    title: 'Multi-Channel Outreach',
+    description: 'LinkedIn, Email, Instagram, X, Telegram, TikTok, Substack, Threads.',
     icon: <Globe size={24} />,
     stat: '10+ Platforms',
     monkeyAction: 'conduct'
   },
   {
     id: 'crm',
-    title: 'Smart CRM',
-    description: 'Track every deal, conversation, and lead automatically.',
+    title: 'Automatic CRM Sync',
+    description: 'Everything logged in real time.',
     icon: <Database size={24} />,
     stat: 'Auto-Sync',
     monkeyAction: 'file'
   },
   {
     id: 'msg',
-    title: 'Human AI',
-    description: 'Messages that pass the Turing test. Natural, witty, and contextual.',
+    title: 'Human Behavior Engine',
+    description: 'Realistic typing, delay, and pacing.',
     icon: <MessageSquare size={24} />,
     stat: '98% Response',
     monkeyAction: 'type'
   },
   {
     id: 'follow',
-    title: 'Auto Follow-up',
-    description: 'The AI nudges leads at the exact right moment to book meetings.',
+    title: 'Adaptive Sequences',
+    description: 'Follow-ups based on engagement.',
     icon: <Calendar size={24} />,
     stat: '3x Meetings',
     monkeyAction: 'time'
   },
   {
     id: 'privacy',
-    title: 'Local Privacy',
-    description: 'Your data lives on your machine. Zero cloud exposure.',
+    title: 'Privacy by Design',
+    description: 'No data ever leaves your device.',
     icon: <ShieldCheck size={24} />,
     stat: '100% Private',
     monkeyAction: 'guard'
   },
   {
     id: 'sync',
-    title: 'Live Sync',
-    description: 'Real-time updates across your entire sales stack.',
+    title: 'Lead Enrichment',
+    description: 'Pull data from LinkedIn, company size, intent.',
     icon: <RefreshCw size={24} />,
     stat: 'Instant',
     monkeyAction: 'connect'
@@ -93,8 +93,8 @@ export const Features: React.FC = () => {
               Feature Stack
             </span>
             <h2 className="text-3xl md:text-4xl lg:text-6xl font-display font-bold mb-6 text-white leading-tight">
-              Everything You Need. <br/>
-              <span className="text-gray-600">Nothing You Don't.</span>
+              Everything You Need : <br/>
+              <span className="text-gray-600">Built for Scale, Built for Trust.</span>
             </h2>
             <p className="text-gray-400 text-base md:text-lg">
               We stripped away the bloat and kept the power. One platform to rule your entire outbound workflow.
