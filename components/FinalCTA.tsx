@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { motion, useInView, useAnimation, useMotionValue, useTransform } from 'framer-motion';
+import { motion, useInView, useMotionValue } from 'framer-motion';
 import { Monkey } from './Monkey';
-import { Check, ArrowRight, Zap } from 'lucide-react';
+import { Check, ArrowRight } from 'lucide-react';
 
 const MagneticButton = ({ children }: { children?: React.ReactNode }) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -34,45 +34,6 @@ const MagneticButton = ({ children }: { children?: React.ReactNode }) => {
   );
 };
 
-const FloatingMonkey = ({ variant, size, delay, x, y, rotate, isCenter }: any) => {
-  return (
-    <motion.div
-      className="absolute top-0 left-1/2"
-      initial={{ x: 0, y: 100, opacity: 0, scale: 0.5, rotate: 0 }}
-      whileInView={{ 
-        x, 
-        y, 
-        opacity: 1, 
-        scale: 1, 
-        rotate 
-      }}
-      transition={{ 
-        type: "spring",
-        damping: 15,
-        stiffness: 100,
-        delay 
-      }}
-    >
-      <motion.div
-        animate={{ y: [0, -15, 0] }}
-        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: Math.random() }}
-        className="relative text-white"
-      >
-        <Monkey variant={variant} size={size} />
-        {isCenter && (
-          <motion.div 
-             className="absolute -top-12 left-1/2 -translate-x-1/2 text-4xl"
-             animate={{ scale: [1, 1.2, 1], rotate: [0, 10, -10, 0] }}
-             transition={{ duration: 2, repeat: Infinity }}
-          >
-            🎉
-          </motion.div>
-        )}
-      </motion.div>
-    </motion.div>
-  );
-};
-
 const LiveTicker = () => {
   const [count, setCount] = useState(42);
 
@@ -84,9 +45,20 @@ const LiveTicker = () => {
   }, []);
 
   return (
-    <span className="text-xs font-mono text-gray-300">
-      <span className="text-white font-bold">{count} teams</span> joined in the last hour
-    </span>
+    <motion.div 
+      initial={{ y: -10, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      key={count} // Retrigger animation on change
+      className="flex items-center space-x-2"
+    >
+      <div className="relative flex h-2 w-2">
+        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+        <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+      </div>
+      <span className="text-xs font-mono text-gray-300">
+        <span className="text-white font-bold">{count} teams</span> joined recently
+      </span>
+    </motion.div>
   );
 };
 
@@ -106,20 +78,22 @@ const ConfettiCanvas = ({ active }: { active: boolean }) => {
     const colors = ['#6366f1', '#ec4899', '#3b82f6', '#ffffff'];
     const particles: any[] = [];
 
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 60; i++) {
       particles.push({
         x: width / 2,
         y: height / 2 + 100,
-        vx: (Math.random() - 0.5) * 20,
-        vy: (Math.random() - 1) * 20 - 5,
-        size: Math.random() * 8 + 2,
+        vx: (Math.random() - 0.5) * 15,
+        vy: (Math.random() - 1) * 15 - 5,
+        size: Math.random() * 6 + 2,
         color: colors[Math.floor(Math.random() * colors.length)],
         rotation: Math.random() * 360,
-        rotationSpeed: (Math.random() - 0.5) * 10,
+        rotationSpeed: (Math.random() - 0.5) * 5,
         friction: 0.96,
-        gravity: 0.4
+        gravity: 0.2
       });
     }
+
+    let animationFrameId: number;
 
     const animate = () => {
       ctx.clearRect(0, 0, width, height);
@@ -144,7 +118,7 @@ const ConfettiCanvas = ({ active }: { active: boolean }) => {
       });
 
       if (activeParticles) {
-        requestAnimationFrame(animate);
+        animationFrameId = requestAnimationFrame(animate);
       }
     };
 
@@ -154,12 +128,15 @@ const ConfettiCanvas = ({ active }: { active: boolean }) => {
     };
 
     window.addEventListener('resize', handleResize);
-    requestAnimationFrame(animate);
+    animate();
 
-    return () => window.removeEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      cancelAnimationFrame(animationFrameId);
+    };
   }, [active]);
 
-  return <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none z-0" />;
+  return <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none z-0 opacity-60" />;
 };
 
 export const FinalCTA: React.FC = () => {
@@ -167,11 +144,11 @@ export const FinalCTA: React.FC = () => {
   const isInView = useInView(containerRef, { once: true, margin: "-100px" });
   
   return (
-    <section ref={containerRef} className="py-24 md:py-48 relative overflow-hidden bg-navy-950 flex flex-col items-center justify-center min-h-[600px] md:min-h-[800px]">
+    <section ref={containerRef} className="py-24 md:py-48 relative overflow-hidden bg-navy-950 flex flex-col items-center justify-center min-h-[700px]">
       
       {/* Dynamic Background */}
       <div className="absolute inset-0 bg-navy-950">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] md:w-[1000px] h-[600px] md:h-[1000px] bg-primary-blue/10 rounded-full blur-[120px] mix-blend-screen animate-pulse-slow" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] md:w-[1000px] h-[600px] md:h-[1000px] bg-primary-blue/5 rounded-full blur-[120px] mix-blend-screen animate-pulse-slow" />
         <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:60px_60px] opacity-20" />
       </div>
 
@@ -180,30 +157,67 @@ export const FinalCTA: React.FC = () => {
 
       <div className="relative z-10 max-w-5xl mx-auto px-4 text-center">
         
-        {/* Live Activity Pill */}
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.5 }}
-          className="inline-flex items-center space-x-2 bg-white/5 border border-white/10 rounded-full px-4 py-1.5 mb-12 backdrop-blur-md"
-        >
-           <div className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-            </div>
-           <LiveTicker />
-        </motion.div>
+        {/* Visual Composition: Ticker + Monkey Cluster */}
+        <div className="relative mb-12 flex flex-col items-center">
+            
+            {/* 1. Ticker (Floating Top) */}
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: 0.6 }}
+              className="mb-6 bg-white/5 border border-white/10 rounded-full px-5 py-2 backdrop-blur-md shadow-xl z-20"
+            >
+               <LiveTicker />
+            </motion.div>
 
-        {/* Floating Monkey Celebration */}
-        <div className="relative h-40 mb-8 perspective-1000">
-          <FloatingMonkey variant="3d" size="lg" delay={0} x={-120} y={20} rotate={-10} />
-          <FloatingMonkey variant="filled" size="xl" delay={0.2} x={0} y={-20} rotate={0} isCenter />
-          <FloatingMonkey variant="outline" size="lg" delay={0.4} x={120} y={20} rotate={10} />
+            {/* 2. Monkey Cluster */}
+            <div className="relative w-full h-32 flex items-center justify-center">
+                
+                {/* Center Glow */}
+                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-primary-purple/20 blur-[50px] rounded-full" />
+
+                {/* Back Left (Supporting) */}
+                <motion.div
+                  initial={{ opacity: 0, x: 20, scale: 0.8 }}
+                  animate={isInView ? { opacity: 0.6, x: -50, scale: 0.85 } : {}}
+                  transition={{ delay: 0.2, duration: 0.8, type: "spring" }}
+                  className="absolute z-0 blur-[1px] grayscale opacity-50"
+                >
+                    <Monkey variant="outline" size="lg" animate={false} />
+                </motion.div>
+
+                {/* Back Right (Supporting) */}
+                <motion.div
+                  initial={{ opacity: 0, x: -20, scale: 0.8 }}
+                  animate={isInView ? { opacity: 0.6, x: 50, scale: 0.85 } : {}}
+                  transition={{ delay: 0.3, duration: 0.8, type: "spring" }}
+                  className="absolute z-0 blur-[1px] opacity-50"
+                >
+                    <Monkey variant="filled" size="lg" animate={false} />
+                </motion.div>
+
+                {/* Front Center (Hero) */}
+                <motion.div
+                   initial={{ opacity: 0, scale: 0.5, y: 20 }}
+                   animate={isInView ? { opacity: 1, scale: 1.3, y: 0 } : {}}
+                   transition={{ delay: 0.1, duration: 0.6, type: "spring" }}
+                   className="relative z-10 drop-shadow-2xl"
+                >
+                   {/* Add a floating animation to the main monkey */}
+                   <motion.div
+                     animate={{ y: [0, -8, 0] }}
+                     transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                   >
+                     <Monkey variant="3d" size="xl" />
+                   </motion.div>
+                </motion.div>
+
+            </div>
         </div>
 
         <motion.h2 
           className="text-4xl md:text-7xl font-display font-bold mb-8 text-white tracking-tight"
-          initial={{ opacity: 0, scale: 0.9 }}
+          initial={{ opacity: 0, scale: 0.95 }}
           animate={isInView ? { opacity: 1, scale: 1 } : {}}
           transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
         >
@@ -219,8 +233,8 @@ export const FinalCTA: React.FC = () => {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.2, duration: 0.8 }}
         >
-          Join 10,000+ sales professionals who automated their workflow <br className="hidden md:block"/>
-          while keeping full control of their data.
+          Join the revolution of automated, private sales outreach. <br className="hidden md:block"/>
+          Automate your workflow while keeping full control of your data.
         </motion.p>
 
         <motion.div 
@@ -232,14 +246,14 @@ export const FinalCTA: React.FC = () => {
           <MagneticButton>
             <button className="w-full sm:w-auto relative px-10 py-5 bg-gradient-to-r from-primary-purple to-primary-blue rounded-full text-white font-bold text-xl shadow-[0_0_40px_rgba(99,102,241,0.4)] group overflow-hidden">
               <span className="relative z-10 flex items-center justify-center">
-                Launch App <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" size={20} />
+                Start Free Trial <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" size={20} />
               </span>
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out" />
             </button>
           </MagneticButton>
 
           <button className="w-full sm:w-auto px-10 py-5 rounded-full text-white font-bold text-lg border border-white/10 hover:bg-white/5 transition-colors flex items-center justify-center">
-            Schedule Demo
+            Book a Demo
           </button>
         </motion.div>
 
