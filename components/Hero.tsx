@@ -1,67 +1,71 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { motion, useScroll, useTransform, useSpring, useMotionValue, AnimatePresence } from 'framer-motion';
+import React, { useRef, useState, useEffect, useMemo } from 'react';
+import { motion, useScroll, useTransform, useSpring, useMotionValue, AnimatePresence, Variants } from 'framer-motion';
 import { Monkey } from './Monkey';
 import { Play, ArrowDown, Activity, Users, MessageCircle, CheckCircle2, Search, Mail, Shield, Zap, BarChart3, Calendar, Loader2, Send, TrendingUp, User } from 'lucide-react';
 import LightRays from './LightRays';
 
-const smoothEase = [0.23, 1, 0.32, 1];
+const smoothEase: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.15,
+      staggerChildren: 0.1,
       delayChildren: 0.2,
     },
   },
 };
 
-const itemVariants = {
-  hidden: { opacity: 0, y: 30 },
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 40 },
   visible: { 
     opacity: 1, 
     y: 0,
-    transition: { duration: 1, ease: smoothEase }
+    transition: { duration: 1.2, ease: smoothEase }
   },
 };
 
-const sideSlideVariants = (direction: 'left' | 'right') => ({
-  hidden: { opacity: 0, x: direction === 'left' ? -100 : 100 },
+const sideSlideVariants = (direction: 'left' | 'right'): Variants => ({
+  hidden: { opacity: 0, x: direction === 'left' ? -60 : 60, scale: 0.95 },
   visible: { 
     opacity: 1, 
     x: 0,
-    transition: { duration: 1.2, ease: smoothEase }
+    scale: 1,
+    transition: { duration: 1.4, ease: smoothEase, delay: 0.4 }
   },
 });
 
-// Improved Organic Floater with more range
+// Improved Organic Floater with randomized phases
 const OrganicFloater = ({ children, delay = 0, intensity = 1 }: { children?: React.ReactNode, delay?: number, intensity?: number }) => {
+  const randomDurationY = useMemo(() => 5 + Math.random() * 2, []);
+  const randomDurationRot = useMemo(() => 7 + Math.random() * 3, []);
+  
   return (
     <motion.div
       animate={{
-        y: [0, -25 * intensity, 0],
-        rotateZ: [0, 3 * intensity, -3 * intensity, 0],
-        scale: [1, 1.03, 0.97, 1]
+        y: [0, -20 * intensity, 0],
+        rotateZ: [0, 2 * intensity, -2 * intensity, 0],
+        x: [0, 5 * intensity, -5 * intensity, 0]
       }}
       transition={{
         y: {
-          duration: 5,
+          duration: randomDurationY,
           repeat: Infinity,
           ease: "easeInOut",
           delay: delay
         },
         rotateZ: {
-          duration: 8,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: delay
-        },
-        scale: {
-          duration: 6,
+          duration: randomDurationRot,
           repeat: Infinity,
           ease: "easeInOut",
           delay: delay + 1
+        },
+        x: {
+            duration: randomDurationRot * 1.2,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: delay + 0.5
         }
       }}
     >
@@ -198,40 +202,31 @@ const HeroMonkey = ({
 }) => {
   const [currentMessage, setCurrentMessage] = useState<MonkeyMessage | null>(null);
   const [isVisible, setIsVisible] = useState(false);
-  
-  // Use a Ref to track the timeout so we can clear it reliably
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  
   const messages = side === 'left' ? leftMessages : rightMessages;
 
   useEffect(() => {
-    // Cleanup any existing timers when props change or unmount
     const cleanup = () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
     cleanup();
 
     const scheduleNext = () => {
-      // Random wait before showing next message (2s - 5s)
-      const waitTime = Math.random() * 3000 + 2000;
+      const waitTime = Math.random() * 3000 + 3000;
       
       timerRef.current = setTimeout(() => {
-        // Pick random message
         const msg = messages[Math.floor(Math.random() * messages.length)];
         setCurrentMessage(msg);
         setIsVisible(true);
         
-        // Hide after showing for 3.5s
         timerRef.current = setTimeout(() => {
           setIsVisible(false);
-          scheduleNext(); // Recursively schedule next
-        }, 3500);
-        
+          scheduleNext();
+        }, 4000); // slightly longer display time
       }, waitTime);
     };
 
-    // Initial start delay
-    timerRef.current = setTimeout(scheduleNext, 2000 + delay * 1000);
+    timerRef.current = setTimeout(scheduleNext, 2500 + delay * 1000);
 
     return cleanup;
   }, [messages, delay]);
@@ -299,10 +294,10 @@ export const Hero: React.FC = () => {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
-  // Smooth mouse movement for parallax
-  const springConfig = { damping: 25, stiffness: 150 };
-  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [5, -5]), springConfig);
-  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-5, 5]), springConfig);
+  // Smooth mouse movement for parallax with reduced damping for crisper movement
+  const springConfig = { damping: 30, stiffness: 200, mass: 0.5 };
+  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [4, -4]), springConfig);
+  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-4, 4]), springConfig);
 
   const handleMouseMove = (e: React.MouseEvent) => {
     const rect = containerRef.current?.getBoundingClientRect();
@@ -324,23 +319,23 @@ export const Hero: React.FC = () => {
       style={{ perspective: '1000px' }}
     >
       
-      {/* Light Rays Background Effect */}
-      <div className="absolute inset-0 z-0 pointer-events-none mix-blend-screen">
+      {/* Light Rays Background Effect - Optimized */}
+      <div className="absolute inset-0 z-0 pointer-events-none mix-blend-screen opacity-70">
         <LightRays
           raysColor="#818cf8"
-          raysSpeed={0.2}
+          raysSpeed={0.15}
           lightSpread={0.4}
           rayLength={0.7}
           raysOrigin="top-center"
           pulsating={true}
-          mouseInfluence={0.3}
+          mouseInfluence={0.2}
         />
       </div>
 
       {/* Tech Grid Background */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:30px_30px] md:bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none z-0" />
 
-      {/* Ambient Orbs */}
+      {/* Ambient Orbs - Slowed down animation */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
         <motion.div 
           className="absolute -top-[10%] -left-[10%] w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-primary-purple/10 rounded-full blur-[80px] md:blur-[100px] mix-blend-screen"
@@ -349,11 +344,10 @@ export const Hero: React.FC = () => {
             opacity: 1,
             x: [0, 50, -30, 0],
             y: [0, -40, 30, 0],
-            scale: [1, 1.05, 0.95, 1],
           }}
           transition={{ 
             opacity: { duration: 1.5 },
-            default: { duration: 15, repeat: Infinity, ease: "linear" }
+            default: { duration: 25, repeat: Infinity, ease: "linear" }
           }}
         />
         <motion.div 
@@ -363,11 +357,10 @@ export const Hero: React.FC = () => {
             opacity: 1,
             x: [0, -60, 40, 0],
             y: [0, 50, -40, 0],
-            scale: [1, 1.1, 0.9, 1],
           }}
           transition={{ 
             opacity: { duration: 1.5, delay: 0.2 },
-            default: { duration: 20, repeat: Infinity, ease: "linear" }
+            default: { duration: 30, repeat: Infinity, ease: "linear" }
           }}
         />
       </div>
@@ -386,7 +379,7 @@ export const Hero: React.FC = () => {
         >
           <div className="relative group">
             {/* Elevated Hero Monkey */}
-            <HeroMonkey side="left" variant="3d" delay={0} />
+            <HeroMonkey side="left" variant="3d" delay={0.2} />
             
             {/* Lead Stack Card Visual */}
             <div className="relative z-10 w-72 mt-8">
@@ -397,7 +390,7 @@ export const Hero: React.FC = () => {
             <motion.div 
               initial={{ width: 0, opacity: 0 }}
               animate={{ width: 100, opacity: 1 }}
-              transition={{ delay: 1.5, duration: 1, ease: smoothEase }}
+              transition={{ delay: 1.8, duration: 1, ease: smoothEase }}
               className="absolute top-1/2 right-[-100px] h-[2px] bg-gradient-to-r from-primary-purple/50 to-transparent hidden xl:block"
             >
               <motion.div 
@@ -415,7 +408,7 @@ export const Hero: React.FC = () => {
           variants={containerVariants}
         >
           <motion.div variants={itemVariants}>
-            <span className="inline-flex items-center py-1.5 px-4 rounded-full bg-white/5 border border-white/10 text-primary-blue text-xs font-semibold mb-6 md:mb-8 backdrop-blur-md shadow-lg hover:bg-white/10 transition-colors cursor-default">
+            <span className="inline-flex items-center py-1.5 px-4 rounded-full bg-white/5 border border-white/10 text-primary-blue text-xs font-semibold mb-6 md:mb-8 backdrop-blur-md shadow-lg hover:bg-white/10 transition-colors cursor-default select-none">
               <Shield size={12} className="mr-1.5" />
               100% Local. 100% Private. 0% Cloud.
             </span>
@@ -472,7 +465,7 @@ export const Hero: React.FC = () => {
         >
            <div className="relative group w-full flex flex-col items-center">
             {/* Elevated Hero Monkey */}
-            <HeroMonkey side="right" variant="3d" delay={1.5} />
+            <HeroMonkey side="right" variant="3d" delay={1.2} />
 
             <div className="relative z-10 w-72 mt-8">
                <AnalyticsPanel />
@@ -482,7 +475,7 @@ export const Hero: React.FC = () => {
             <motion.div 
                initial={{ width: 0, opacity: 0 }}
                animate={{ width: 60, opacity: 1 }}
-               transition={{ delay: 1.5, duration: 1, ease: smoothEase }}
+               transition={{ delay: 1.8, duration: 1, ease: smoothEase }}
                className="absolute top-1/2 left-[-60px] h-[2px] bg-gradient-to-r from-transparent to-primary-blue/50 hidden xl:block" 
             />
           </div>

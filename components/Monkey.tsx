@@ -1,5 +1,5 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useMemo } from 'react';
+import { motion, Variants } from 'framer-motion';
 
 // Asset URLs provided
 const ASSETS = {
@@ -39,19 +39,33 @@ export const Monkey: React.FC<MonkeyProps> = ({
     'custom': ''
   };
 
-  const variants = {
+  // Memoize random values so they don't change on re-renders, creating a glitch
+  const randomDelay = useMemo(() => Math.random() * 2, []);
+  const randomDuration = useMemo(() => 4 + Math.random() * 2, []);
+
+  const variants: Variants = {
     idle: {
-      y: [0, -5, 0],
+      y: [0, -6, 0],
+      rotate: [0, 1.5, -1.5, 0],
       transition: {
-        duration: 4,
-        repeat: Infinity,
-        ease: "easeInOut"
+        y: {
+            duration: randomDuration,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: randomDelay
+        },
+        rotate: {
+            duration: randomDuration * 1.5,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: randomDelay
+        }
       }
     },
     hover: {
       scale: 1.1,
       rotate: [0, 5, -5, 0],
-      transition: { duration: 0.4 }
+      transition: { type: "spring", stiffness: 300, damping: 12 }
     },
     tap: {
       scale: 0.95,
@@ -69,14 +83,13 @@ export const Monkey: React.FC<MonkeyProps> = ({
         <img 
           src={ASSETS['3d']} 
           alt="Monoes 3D Logo" 
-          className="w-full h-full object-contain drop-shadow-2xl"
+          className="w-full h-full object-contain drop-shadow-2xl select-none pointer-events-none"
           style={style}
         />
       );
     }
 
     // SVG versions (filled/outline/text) should be colorable via CSS
-    // We use mask-image to allow the background color (set via className text-color or bg-color) to shine through
     return (
       <div 
         className="w-full h-full bg-current"
@@ -102,6 +115,7 @@ export const Monkey: React.FC<MonkeyProps> = ({
       animate={animate ? "idle" : undefined}
       whileHover={animate ? "hover" : undefined}
       whileTap={animate ? "tap" : undefined}
+      style={{ willChange: animate ? 'transform' : 'auto' }}
     >
        {renderContent()}
     </motion.div>

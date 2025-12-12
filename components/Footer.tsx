@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Monkey } from './Monkey';
 import { Twitter, Linkedin, Github, Disc, Globe, ArrowUp } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
+import { PageView } from '../App';
 
-export const Footer: React.FC = () => {
+interface FooterProps {
+  onNavigate?: (page: PageView) => void;
+}
+
+export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
@@ -19,26 +24,35 @@ export const Footer: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const containerVariants = {
+  const handleLinkClick = (e: React.MouseEvent, page: PageView) => {
+    e.preventDefault();
+    if (onNavigate) {
+      onNavigate(page);
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const containerVariants: Variants = {
     hidden: { opacity: 0, y: 50 },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
         duration: 0.8,
-        ease: [0.23, 1, 0.32, 1],
+        ease: [0.23, 1, 0.32, 1] as [number, number, number, number],
         staggerChildren: 0.1,
         delayChildren: 0.2
       }
     }
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
     visible: { 
       opacity: 1, 
       y: 0,
-      transition: { duration: 0.6, ease: [0.23, 1, 0.32, 1] }
+      transition: { duration: 0.6, ease: [0.23, 1, 0.32, 1] as [number, number, number, number] }
     }
   };
 
@@ -52,7 +66,6 @@ export const Footer: React.FC = () => {
     >
       
       {/* Newsletter Section - Pre-footer */}
-      {/* Wrapped in a regular div to handle positioning (centering) without conflict with motion transform */}
       <div className="absolute -top-16 left-1/2 transform -translate-x-1/2 w-full max-w-4xl px-4 z-20">
         <motion.div variants={itemVariants}>
           <div className="bg-gradient-to-r from-primary-purple to-primary-blue rounded-3xl p-8 md:p-12 shadow-2xl flex flex-col md:flex-row items-center justify-between">
@@ -105,9 +118,9 @@ export const Footer: React.FC = () => {
           <motion.div variants={itemVariants}>
             <h4 className="font-bold text-white mb-6">Product</h4>
             <ul className="space-y-3 text-sm text-gray-400">
-              <li><a href="#" className="hover:text-primary-blue transition-colors">Features</a></li>
-              <li><a href="#" className="hover:text-primary-blue transition-colors">Pricing</a></li>
-              <li><a href="#" className="hover:text-primary-blue transition-colors">Integrations</a></li>
+              <li><a href="#features" onClick={(e) => handleLinkClick(e, 'features')} className="hover:text-primary-blue transition-colors">Features</a></li>
+              <li><a href="#pricing" className="hover:text-primary-blue transition-colors">Pricing</a></li>
+              <li><a href="#how-it-works" onClick={(e) => handleLinkClick(e, 'how-it-works')} className="hover:text-primary-blue transition-colors">How It Works</a></li>
               <li><a href="#" className="hover:text-primary-blue transition-colors">Changelog</a></li>
             </ul>
           </motion.div>
